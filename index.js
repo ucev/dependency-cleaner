@@ -1,16 +1,14 @@
 const { exec } = require('child_process')
 const esprima = require('esprima')
 const fs = require('fs')
-const os = require('os')
 const path = require('path')
 const process = require('process')
-const readline = require('readline')
 
 const excludeDirs = ['.', '..', 'node_modules', '.git']
 const expectSuffix = ['.js']
 
 const fDependencies = new Set()
-const fDependenciesDev = new Set()
+const fDevDependencies = new Set()
 
 function removeDependencies() {
     exec(`npm uninstall --save ${Array.from(fDependencies)}`, (error, stdout, stderr) => {
@@ -20,7 +18,7 @@ function removeDependencies() {
             console.log(error)
             return
         }
-        exec(`npm uninstall --save-dev ${Array.from(fDependenciesDev)}`, (err, stdout, stderr) => {
+        exec(`npm uninstall --save-dev ${Array.from(fDevDependencies)}`, (err, stdout, stderr) => {
             console.log(stdout)
             console.log(stderr)
             if (error) {
@@ -35,7 +33,7 @@ function removeDependencies() {
 
 function confirmRemove(isRemove = false) {
     const numDependencies = fDependencies.size
-    const numDevDependencies = fDependenciesDev.size
+    const numDevDependencies = fDevDependencies.size
     if (numDependencies === 0 && numDevDependencies === 0) {
         console.log('No Unused Dependencies/DevDependencies')
     }
@@ -43,7 +41,7 @@ function confirmRemove(isRemove = false) {
         console.log(`Unused Dependencies are: ${Array.from(fDependencies).toString()}`)
     }
     if (numDevDependencies > 0) {
-        console.log(`Unused devDependencies are: ${Array.from(fDependenciesDev).toString()}`)
+        console.log(`Unused devDependencies are: ${Array.from(fDevDependencies).toString()}`)
     }
     if (!isRemove) {
         return
@@ -65,8 +63,8 @@ function checkDependencies(dependency) {
     if (fDependencies.has(dependency)) {
         fDependencies.delete(dependency)
     }
-    if (fDependenciesDev.has(dependency)) {
-        fDependenciesDev.delete(dependency)
+    if (fDevDependencies.has(dependency)) {
+        fDevDependencies.delete(dependency)
     }
 }
 
@@ -170,7 +168,7 @@ function clean(rootdir = process.cwd(), isRemove = false) {
         Object.keys(content.dependencies).forEach(d => fDependencies.add(d))
     }
     if (content.devDependencies) {
-        Object.keys(content.devDependencies).forEach(d => fDependenciesDev.add(d))
+        Object.keys(content.devDependencies).forEach(d => fDevDependencies.add(d))
     }
     listDir(rootdir, true)
     confirmRemove(isRemove)

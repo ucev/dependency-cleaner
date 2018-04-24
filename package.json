@@ -11,8 +11,8 @@
     "dependency-cleaner": "bin/index.js"
   },
   "dependencies": {
-    "chalk": "^2.4.0",
-    "esprima": "^4.0.0"
+    "esprima": "^4.0.0",
+    "minimist": "^1.2.0"
   },
   "devDependencies": {
     "babel-eslint": "^8.2.3",

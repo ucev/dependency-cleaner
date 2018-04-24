@@ -3,5 +3,5 @@
 Remove dependencies you no longer needed in package.json
 
 # Params
--d: root directory
--y: delete automatically
+- d: target directory, must have package.json in it
+- y: delete automatically
