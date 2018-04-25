@@ -121,9 +121,8 @@ function readFile(filename) {
         return
     }
     let fileContent = fs.readFileSync(filename, { encoding: 'utf8' })
-    if (fileContent.startsWith('#!')) {
-        fileContent = fileContent.split('\n').slice(1).join('\n')
-    }
+    // handle hashbang/shebang
+    fileContent = fileContent.replace(/(^#!.*)/, function(m) { return Array(m.length + 1).join(' ')})
     try {
         const body = esprima.parseModule(fileContent).body
         body.forEach(bodyPart => {
